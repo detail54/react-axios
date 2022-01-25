@@ -1,8 +1,9 @@
 import React from 'react'
 import './App.css'
+import Main from './layout/Main'
 
 const App: React.FC = () => {
-  return <div className="App">bolierplate</div>
+  return <Main />
 }
 
 export default App
