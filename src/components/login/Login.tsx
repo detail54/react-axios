@@ -1,56 +1,29 @@
+import { AxiosError } from 'axios'
 import React, { useState } from 'react'
-import styled from 'styled-components'
-import { userLogin } from '../../apis/user'
-
-const Form = styled.div`
-  padding: 50px 120px;
-  box-shadow: 5px 5px 10px;
-  border-radius: 10px;
-`
-
-const Header = styled.h1`
-  margin-top: 0;
-  font-size: 2em;
-  font-weight: bold;
-`
-
-const Label = styled.label`
-  font-weight: 500;
-  font-size: 1em;
-  display: flex;
-  align-items: center;
-  padding: 0 5px;
-  margin-top: 15px;
-`
-
-const Input = styled.input.attrs((props: { type: string }) => ({
-  type: props.type,
-  size: 30,
-}))`
-  margin: 10px 0;
-  height: 25px;
-  font-size: 15px;
-`
-
-const Submit = styled.button`
-  border: 1px solid black;
-  border-radius: 3px;
-  display: block;
-  background-color: #000000;
-  color: white;
-  margin-top: 10px;
-  padding: 2px 15px;
-  cursor: pointer;
-  transition: 0.3s;
-
-  &:hover {
-    background-color: #00000096;
-  }
-`
+import { useNavigate } from 'react-router-dom'
+import { useSetRecoilState } from 'recoil'
+import { userLogin, findUser } from '../../apis/user'
+import { LoginStyles } from './Login.styles'
+import { userState } from '../../atom'
+import { IUser } from '../../atom/interface'
 
 const Login: React.FC = () => {
   const [userID, setUserID] = useState<string>('')
   const [userPW, setUserPW] = useState<string>('')
+  const setUser = useSetRecoilState(userState)
+  const navigate = useNavigate()
+
+  const getUserData = () => {
+    findUser({
+      username: userID,
+      password: userPW,
+    }).then((data: IUser | undefined) => {
+      if (data) {
+        setUser(data)
+      }
+    })
+    navigate('/product')
+  }
 
   const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.currentTarget.type === 'password') {
@@ -65,17 +38,34 @@ const Login: React.FC = () => {
       username: userID,
       password: userPW,
     })
+      .then(() => {
+        getUserData()
+      })
+      .catch((error: AxiosError) => {
+        // eslint-disable-next-line no-console
+        console.log(error)
+      })
   }
 
   return (
-    <Form>
-      <Header>로그인</Header>
-      <Label htmlFor='userID'>ID</Label>
-      <Input id='userID' type='text' onChange={onChange} />
-      <Label htmlFor='userPW'>PW</Label>
-      <Input id='userPW' type='password' onChange={onChange} />
-      <Submit onClick={onSubmit}>login</Submit>
-    </Form>
+    <LoginStyles.Form>
+      <LoginStyles.Header>로그인</LoginStyles.Header>
+      <LoginStyles.Label htmlFor='userID'>ID</LoginStyles.Label>
+      <LoginStyles.Input
+        id='userID'
+        type='text'
+        value={userID}
+        onChange={onChange}
+      />
+      <LoginStyles.Label htmlFor='userPW'>PW</LoginStyles.Label>
+      <LoginStyles.Input
+        id='userPW'
+        type='password'
+        value={userPW}
+        onChange={onChange}
+      />
+      <LoginStyles.Submit onClick={onSubmit}>login</LoginStyles.Submit>
+    </LoginStyles.Form>
   )
 }
 
