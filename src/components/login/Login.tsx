@@ -1,20 +1,23 @@
-import { AxiosError } from 'axios'
 import React, { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
-import {
-  useRecoilState,
-  useRecoilValue,
-  useRecoilValueLoadable,
-  useSetRecoilState,
-} from 'recoil'
-import { userLogin, authUser } from '../../recoil/selector/user'
+// lib
+import { AxiosError, AxiosResponse } from 'axios'
+import { NavigateFunction, useNavigate } from 'react-router-dom'
+import { useSetRecoilState } from 'recoil'
+// api
+import { userLogin, allUsers } from '../../store/apis/user'
+// style
 import { LoginStyles } from './Login.styles'
-import { allUserState, authUserState } from '../../recoil/atom'
-import { IUser } from '../../recoil/atom/interface'
+// interface
+import { initUser, IUser } from '../../store/atom/interface'
+// atom
+import { authUserState } from '../../store/atom'
 
 const Login: React.FC = () => {
   const [userID, setUserID] = useState<string>('')
   const [userPW, setUserPW] = useState<string>('')
+  const setAuthUserData = useSetRecoilState(authUserState)
+
+  const navigate: NavigateFunction = useNavigate()
 
   const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.currentTarget.type === 'password') {
@@ -25,7 +28,26 @@ const Login: React.FC = () => {
   }
 
   const onSubmit = () => {
-    console.log('ㅎㅇㅎㅇ')
+    userLogin({
+      username: userID,
+      password: userPW,
+    })
+      .then(() => {
+        let userData: IUser = initUser
+        allUsers().then((response: AxiosResponse) => {
+          userData = response.data.find(
+            (user: IUser) =>
+              user.username === userID && user.password === userPW,
+          )
+        })
+
+        setAuthUserData(userData)
+        navigate('/product')
+      })
+      .catch((error: AxiosError) => {
+        // eslint-disable-next-line no-console
+        console.log('login error::: ', error)
+      })
   }
 
   return (

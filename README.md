@@ -15,6 +15,6 @@
 - CRA
 - Axios
 - Recoil
-- Recoilize
+- Recoilize(확인중....)
 - Eslint
 - Prettier

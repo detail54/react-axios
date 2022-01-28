@@ -1,6 +1,6 @@
 import { AxiosResponse } from 'axios'
 import { IProduct } from '../atom/interface'
-import { defaultInstance } from './index'
+import { defaultInstance } from '../apis/index'
 
 export const getAllProducts: () => Promise<IProduct[]> = async () => {
   const products: IProduct[] = await defaultInstance
