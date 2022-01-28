@@ -5,7 +5,7 @@ import { AxiosResponse } from 'axios'
 // api
 import { defaultInstance } from './index'
 // interface
-import { LoginForm } from '../selector/interface'
+import { LoginForm } from './interface'
 
 // login api
 export const userLogin: (

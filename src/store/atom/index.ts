@@ -1,12 +1,12 @@
 import { atom } from 'recoil'
-import { IUser, initUser } from './interface'
-
-export const allUserState = atom<IUser[]>({
-  key: 'users',
-  default: [],
-})
+import { IUser, initUser, IProduct } from './interface'
 
 export const authUserState = atom<IUser>({
   key: 'user',
   default: initUser,
+})
+
+export const productsListState = atom<IProduct[]>({
+  key: 'products',
+  default: [],
 })
