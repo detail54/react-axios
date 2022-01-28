@@ -5,6 +5,7 @@ const Products = styled.ul`
   display: flex;
   justify-content: center;
   flex-wrap: wrap;
+  padding: 0;
 `
 
 export const ProductStyles = {
